@@ -1,7 +1,7 @@
 import 'package:firebase_setup/services/firestore.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget{
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
@@ -9,48 +9,64 @@ class HomePage extends StatefulWidget{
 }
 
 class _HomePageState extends State<HomePage> {
-  
   //FireStore
-  final FirestoreService firestoreService=FirestoreService();
-
+  final FirestoreService firestoreService = FirestoreService();
 
   //Text Controller
-  final TextEditingController textController=TextEditingController();
+  final TextEditingController textController = TextEditingController();
 
   //open a dialog box to add a note
-  void openNoteBox(){
-    showDialog(context:context,builder:(context) => AlertDialog(
-      content: TextField(
-        controller: textController,
+  void openNoteBox() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: TextField(
+          controller: textController,
+        ),
+        actions: [
+          //button to Save
+          ElevatedButton(
+            onPressed: () {
+              //Add a new Note
+              firestoreService.addNote(textController.text);
+
+              //clear the text controller
+              textController.clear();
+
+              //close the dialogBox
+              Navigator.pop(context);
+            },
+            child: Text("Add"),
+          )
+        ],
       ),
-      actions: [
-
-        //button to Save
-        ElevatedButton(
-          onPressed: (){
-            //Add a new Note 
-            firestoreService.addNote(textController.text);
-
-            //clear the text controller
-            textController.clear();
-
-            //close the dialogBox
-            Navigator.pop(context);
-          },
-         child: Text("Add"),
-         )
-      ],
-    ),);
+    );
   }
 
   @override
-  Widget build (BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Notes")),
-      floatingActionButton: FloatingActionButton(
-        onPressed: openNoteBox,
-        child: const Icon(Icons.add),
-        ),
-    );
+        appBar: AppBar(title: Text("Notes")),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              onPressed: () {},
+              child: const Text('Fetch'),
+            ),
+            SizedBox(height: 16),
+            
+            
+            FloatingActionButton(
+              onPressed: openNoteBox,
+              child: const Icon(Icons.add),
+            ),
+          ],
+        ));
   }
 }
+
+// FloatingActionButton(
+// onPressed: openNoteBox,
+// child: const Icon(Icons.add),
+// ),
