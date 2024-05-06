@@ -6,6 +6,12 @@ class FirestoreService{
   //get collction of notes
   final CollectionReference notes=FirebaseFirestore.instance.collection('notes');
 
+   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<void> addData(Map<String, dynamic> data) {
+    return _firestore.collection('fetch_sample_user').add(data);
+  }
+
   // CREATE: add a new note
   Future<void> addNote(String note){
     return notes.add({

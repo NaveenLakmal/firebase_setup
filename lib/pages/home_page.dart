@@ -1,5 +1,7 @@
 import 'package:firebase_setup/services/firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http; // Import the http package
+import 'dart:convert'; // Import the convert package for JSON decoding
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,6 +16,8 @@ class _HomePageState extends State<HomePage> {
 
   //Text Controller
   final TextEditingController textController = TextEditingController();
+
+  List<dynamic> apiData = [];
 
   //open a dialog box to add a note
   void openNoteBox() {
@@ -43,6 +47,35 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+
+  // Fetch data from the API
+  Future<void> fetchApiData() async {
+    print("fetch is work api");
+    final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/users'));
+    if (response.statusCode == 200) {
+      // print(response);
+      apiData = json.decode(response.body);
+      setState(() {}); // Trigger a rebuild
+      // print("fetch is work");
+      // print(apiData);
+    } else {
+      throw Exception('Failed to fetch data from API');
+    }
+  }
+
+   // Store API data in Firebase Firestore
+  void storeApiDataInFirestore() {
+    fetchApiData();
+    print("fetch is work");
+    
+    for (var data in apiData) {
+      print("fetch is work in loop");
+      firestoreService.addData(data);
+      
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +84,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             FloatingActionButton(
-              onPressed: () {},
+              onPressed: storeApiDataInFirestore,
               child: const Text('Fetch'),
             ),
             SizedBox(height: 16),
