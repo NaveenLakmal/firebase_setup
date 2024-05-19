@@ -22,8 +22,16 @@ class FirestoreService{
   }
 
   // READ:get notes from databse
+  Stream<QuerySnapshot> getNotesStream(){
+    final notesStream=notes.orderBy('timestamp',descending: true).snapshots();
+
+    return notesStream;
+  }
 
   // UPDATE:update notes give a doc Id
 
   // DELETE:Delete a note give a doc Id 
 }
+
+//https://youtu.be/PFP8GnJcJHA
+// https://youtu.be/iQOvD0y-xnw
