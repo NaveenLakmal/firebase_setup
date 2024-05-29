@@ -28,6 +28,14 @@ class FirestoreService{
     return notesStream;
   }
 
+  //
+  Stream<QuerySnapshot> getFDataStream(){
+    // final notesStream2=_firestore.collection('fetch_sample_user').snapshots();
+
+    // return notesStream2;
+    return _firestore.collection('fetch_sample_user').snapshots();
+  }
+
   // UPDATE:update notes give a doc Id
 
   // DELETE:Delete a note give a doc Id 

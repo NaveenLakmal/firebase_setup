@@ -90,6 +90,7 @@ class _HomePageState extends State<HomePage> {
             child: const Text('Fetch'),
           ),
           SizedBox(height: 16),
+
           FloatingActionButton(
             onPressed: openNoteBox,
             child: const Icon(Icons.add),
@@ -97,36 +98,40 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: firestoreService.getNotesStream(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List notesList = snapshot.data!.docs;
-
-            //Display as a list
-            return ListView.builder(
-              itemCount: notesList.length,
-              itemBuilder: (context, index) {
-              //get each individual doc
-              DocumentSnapshot document = notesList[index];
-              String docID = document.id;
-
-              //get each note from doc
-              Map<String, dynamic> data =
-                  document.data() as Map<String, dynamic>;
-              String noteText = data['note'];
-
-              //display as a list Title
-              return ListTile(
-                title: Text(noteText),
-              );
-            });
-
-            //if there is a no data return nothing
-          }else{
-            return const Text("No notes");
-          }
+  stream: firestoreService.getFDataStream(),
+  builder: (context, snapshot) {
+    if (snapshot.hasData) {
+      List<DocumentSnapshot> documentsList = snapshot.data!.docs;
+      return ListView.builder(
+        itemCount: documentsList.length,
+        itemBuilder: (context, index) {
+          Map<String, dynamic> data = documentsList[index].data() as Map<String, dynamic>;
+          return ListTile(
+            // title: Text(data.toString()), // Display the entire document data as a string
+            // Or, you can access specific fields like:
+            // title: Text('Name: ${data['name']} - Email: ${data['email']}'),
+             title: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(text: 'ID: ${data['id']} - '),
+                  TextSpan(
+                    text: 'Name: ${data['name']}\n',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(text: 'E-mail: ${data['email']}'),
+                  
+                ]
+                )
+              )
+            //  Text('ID: ${data['id']} - Name: ${data['name']} - E-mail: ${data['email']}'),
+          );
         },
-      ),
+      );
+    } else {
+      return const Text("No data");
+    }
+  },
+),
     );
   }
 }
@@ -135,3 +140,36 @@ class _HomePageState extends State<HomePage> {
 // onPressed: openNoteBox,
 // child: const Icon(Icons.add),
 // ),
+
+
+// StreamBuilder<QuerySnapshot>(
+//         stream: firestoreService.getFDataStream(),
+//         builder: (context, snapshot) {
+//           if (snapshot.hasData) {
+//             List notesList = snapshot.data!.docs;
+
+//             //Display as a list
+//             return ListView.builder(
+//               itemCount: notesList.length,
+//               itemBuilder: (context, index) {
+//               //get each individual doc
+//               DocumentSnapshot document = notesList[index];
+//               // String docID = document.id;
+
+//               //get each note from doc
+//               Map<String, dynamic> data =
+//                   document.data() as Map<String, dynamic>;
+//               String noteText = data['note'];
+
+//               //display as a list Title
+//               return ListTile(
+//                 title: Text(noteText),
+//               );
+//             });
+
+//             //if there is a no data return nothing
+//           }else{
+//             return const Text("No notes");
+//           }
+//         },
+//       ),   this is old strem bulder (notes tika output karanna tibba code eka )
